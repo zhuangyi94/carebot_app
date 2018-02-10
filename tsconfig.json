@@ -6,7 +6,8 @@
     "experimentalDecorators": true,
     "lib": [
       "dom",
-      "es2015"
+      "es2015",
+      "es5"
     ],
     "module": "es2015",
     "moduleResolution": "node",
@@ -27,5 +28,8 @@
   "compileOnSave": false,
   "atom": {
     "rewriteTsconfig": false
-  }
+  },
+  "types": [
+    "firebase"
+  ]
 }
