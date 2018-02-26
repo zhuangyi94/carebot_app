@@ -70,8 +70,7 @@ export class ChatProvider {
       return promise;
     }
     else{
-
-console.log("yess")
+      
     var promise = new Promise((resolve, reject) => {
         this.firebotchats.child(firebase.auth().currentUser.uid).push({
           sentby: firebase.auth().currentUser.uid,

@@ -1,7 +1,58 @@
+
+#custom-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100000;
+  width:100%;
+  background-color: #B4C7E8;
+}
+
+.flb {
+  background-color: #B4C7E8;
+  height:100%;
+  width:100%;
+  animation: pulse 1s linear forwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.Aligner-item {
+  max-width: 50%;
+}
+.Aligner-item--top {
+  align-self: flex-start;
+}
+.Aligner-item--bottom {
+  align-self: flex-end;
+}
+#custom-overlay img {
+  display: block;
+  margin: 0 auto;
+  width: 50%;
+  height: auto;
+  animation:fade-in;
+  //animation: animation 3100ms linear infinite both;
+  animation-delay: 1s;
+}
+
+@keyframes pulse {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+
+
 page-login {
 .background {
     //background-image: url('../assets/icon/Untitled.png');
-    background-color: #2B3D53;
+    background-color: #B1CCFB;
 }
 .scroll-content {
     align-content: center;
@@ -14,7 +65,7 @@ ion-card.card {
     box-shadow: none;
     background: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
-    background-color: #2B3D53;
+    background-color: #B1CCFB;
 
 }
 
@@ -38,7 +89,7 @@ ion-card-header.card-header {
     margin-bottom: 10px;
     background: rgba(255, 255, 255, 0.5);
     border: medium none;
-    background-color: #2B3D53;
+    background-color: #B1CCFB;
     //background : transparent;
 
 

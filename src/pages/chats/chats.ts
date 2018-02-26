@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events, AlertController } from 'ionic-angular';
 import { RequestsProvider } from '../../providers/requests/requests';
 import { ChatProvider } from '../../providers/chat/chat';
+import { SpinnerDialog } from '@ionic-native/spinner-dialog'
 /**
  * Generated class for the ChatsPage page.
  *
@@ -16,27 +17,54 @@ import { ChatProvider } from '../../providers/chat/chat';
 export class ChatsPage {
   myrequests;
   myfriends;
+  myGuardian = [];
+  myElderly = [];
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
     public requestservice: RequestsProvider,
     public events: Events, 
     public alertCtrl: AlertController,
-    public chatservice: ChatProvider) {
+    public chatservice: ChatProvider,
+    public spinner: SpinnerDialog) {
   }
 
 
   ionViewWillEnter() {
+    
     this.requestservice.getmyrequests();
     this.requestservice.getmyfriends();
-    this.myfriends = [];
-    this.events.subscribe('gotrequests', () => {
-      this.myrequests = [];
-      this.myrequests = this.requestservice.userdetails;
-    })
-    this.events.subscribe('friends', () => {
+    this.requestservice.getmyGuardian();
+    this.requestservice.getmyElderly();
+
+    //this.spinner.show();
+
+    let promise = new Promise( resolve=> {
       this.myfriends = [];
-      this.myfriends = this.requestservice.myfriends; 
+      this.events.subscribe('gotrequests', () => {
+        this.myrequests = [];
+        this.myrequests = this.requestservice.userdetails;
+      })
+      this.events.subscribe('friends', () => {
+        this.myfriends = [];
+        this.myfriends = this.requestservice.myfriends; 
+      })
+       this.events.subscribe('guardian', () => {
+        this.myGuardian = [];
+        this.myGuardian = this.requestservice.myGuardian; 
+      console.log("myGuardian",this.myGuardian)  
+      })
+       this.events.subscribe('elderly', () => {
+        this.myElderly = [];
+        this.myElderly = this.requestservice.myElderly; 
+      console.log("myelderly",this.myElderly)  
+      })
+
+    }).then( res => {
+      //this.spinner.hide();
     })
+
+
+ 
   }
 
   ionViewDidLeave() {

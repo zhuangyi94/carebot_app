@@ -1,27 +1,42 @@
 <ion-header>
-  
 </ion-header>
-
 
 <ion-content class="background">
 <ion-card>
+
   <ion-card-header style="color:black">
     Signup
   </ion-card-header>
   <ion-card-content>
      <ion-list >
+      <form [formGroup]="authForm" (ngSubmit)="signup()">
        <ion-item>  
-           <ion-input type="email" placeholder="Email" [(ngModel)]="newuser.email"></ion-input>
+           <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
        </ion-item>
        <ion-item>  
-           <ion-input type="password" placeholder="Password" [(ngModel)]="newuser.password"></ion-input>
+           <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
        </ion-item>
        <ion-item>  
-           <ion-input type="text" placeholder="Nick Name" [(ngModel)]="newuser.displayName"></ion-input>
+           <ion-input type="text" placeholder="Nick Name" formControlName="displayName"></ion-input>
        </ion-item>
-      <button ion-button block round outline color="light" (click)="signup()">Sign Up</button>
-      <button ion-button full clear color="light" (click)="goback()">Go Back</button>
+     </form>
      </ion-list>    
   </ion-card-content>
+  
+  <form [formGroup]="authFormExtra">
+  <ion-card *ngIf="!isHide">
+    <ion-card-header>Family/Friend</ion-card-header>
+      <ion-item>  
+        <ion-input type="email" placeholder="Email" formControlName="elderlyEmail"></ion-input>
+      </ion-item>
+  </ion-card>
+  </form>
+
+  <ion-card>
+    <button ion-button block round outline color="light" (click)="signup()">Sign Up</button>
+    <button ion-button full clear color="light" (click)="goback()">Go Back</button>
+  </ion-card>
+
+
 </ion-card>
 </ion-content>

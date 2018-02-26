@@ -6,7 +6,7 @@
 -->
 <ion-header>
 
-  <ion-navbar color="hcolor">
+  <ion-navbar color="titleColor">
     <ion-title>ChatBot</ion-title>
     <ion-buttons end>
       <button ion-button (click)="sendPicMsg()">
@@ -39,15 +39,14 @@
     </ion-item>
   </ion-list>
 </div>
-</ion-content>
 
 <ion-footer ion-fixed>    
-  <ion-toolbar class="no-border" color="white">        
-    <ion-input [(ngModel)]="newmessage" placeholder="Write your message ..."></ion-input>  
-    <ion-buttons end>
-      <button ion-button (click)="start()">
-        <ion-icon name="send" color="primary"></ion-icon>
+  <ion-toolbar class="no-border" color="white">    
+  <div style="text-align: center;">    
+      <button ion-button round (click)="start(newmessage)">
+        <ion-icon name="mic"></ion-icon>
       </button>
-    </ion-buttons>
+      <ion-input type="text" placeholder="newmessage" [(ngModel)]="newmessage"></ion-input>
+    </div>
   </ion-toolbar>    
 </ion-footer>

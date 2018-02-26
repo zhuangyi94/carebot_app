@@ -16,7 +16,7 @@ import firebase from 'firebase';
 })
 export class CalendarPage {
   
-  event = { startTime: new Date().toISOString(), endTime: new Date().toISOString(), allDay: false };
+  event = { startTime: new Date().toISOString(), endTime: new Date().toISOString(), allDay: false, title:"" };
   eventToFirebase = this.event;
   minDate = new Date().toISOString();
   fireCalendarEvent =  firebase.database().ref('/calendarEvent');
@@ -46,6 +46,7 @@ export class CalendarPage {
     //var ref = firebase.database().ref('/calendarEvent');
 	    var promise = new Promise((resolve, reject) => {
         this.fireCalendarEvent.child(firebase.auth().currentUser.uid).push({
+          title: this.event.title,
           allDay: this.event.allDay,
           startTime: this.event.startTime,
           endTime: this.event.endTime,

@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Contact
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div>
+    <div class="profile-image" (click)="editimage()">
+      <img src="{{photoUrl}}">
+    </div>
+  </div>
+  <div style = "height: 50px"></div>
+  <div style = "height: 200px; width: 320px; text-align: center;">
+    <div style="display: block; margin-left: 20px" *ngIf="openBar"> 
+      <canvas baseChart
+              [datasets]="barChartData"
+              [labels]="barChartLabels"
+              [options]="barChartOptions"
+              [legend]="barChartLegend"
+              [chartType]="barChartType"
+              (chartHover)="chartHovered($event)"
+              (chartClick)="chartClicked($event)"></canvas>
+    </div>
+<!--     <button (click)="randomize()">Update</button> -->
+    <div style="display: block; margin-left: 50px " *ngIf="!openBar">
+      <canvas baseChart
+                  [data]="doughnutChartData"
+                  [labels]="doughnutChartLabels"
+                  [chartType]="doughnutChartType"
+                  (chartHover)="chartHovered($event)"
+                  (chartClick)="chartClicked($event)"></canvas>
+    </div>
+  </div>
+  <div (click)="showDialog()" style="text-align: center;">Show previous conversation records</div>
+<!--   <div style = "height:80px; width: 320px; border:1px solid #f00; text-align: center; margin:0 auto;">
+
+  </div> -->
+</ion-content>
+
+<ion-footer ion-fixed>    
+  <ion-toolbar class="no-border" color="white">    
+  <div style="text-align: center;">
+    <div class="row">
+      <div class="col col-50">
+        <button ion-button block round color="light" (click)="setBar()">
+          Bar
+        </button>
+      </div>
+      <div class="col col-50">
+        <button ion-button block round color="light" (click)="setPie()">
+          Pie Chart
+        </button>
+      </div>
+    </div>    
+  </div>
+  </ion-toolbar>    
+</ion-footer>

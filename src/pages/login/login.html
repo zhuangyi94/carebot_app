@@ -1,47 +1,57 @@
-<!--
-  Generated template for the LoginPage page.
 
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
+<div id="custom-overlay" [style.display]="splash ? 'flex': 'none'">
+  <div class="flb">
+    <div class="Aligner-item Aligner-item--top"></div>
+    <img src="assets/imgs/sc1.png">
+    <div class="Aligner-item Aligner-item--bottom"></div>
+  </div>
+</div>
+
+
 <ion-header>
-
-      <ion-title>
-        
-      </ion-title>
-
+      <ion-title></ion-title>
 </ion-header>
 
 
 <ion-content class="background">
-
   <ion-card>
     <ion-card-header>
-      <ion-img src="assets/icon/carebot_login.png" width="180" height="180">
+      <ion-img src="assets/imgs/img4.png" width="180" height="230">
     </ion-img>
     </ion-card-header>
     <ion-card-content>
       <ion-list no-lines>
-        <div class="spacer" style="height: 10px;"></div>
-        <ion-item>
-          <ion-label><ion-icon name="mail" style="color:white"></ion-icon></ion-label>
-          <ion-input 
-          type="email" 
-          placeholder="Email" [(ngModel)]="credentials.email"></ion-input>
-        </ion-item>
-        <div class="spacer" style="height: 5px;"></div>
-        <ion-item>
-          <ion-label><ion-icon name="key" style="color:white"></ion-icon></ion-label>
-          <ion-input type="password" placeholder="Password" [(ngModel)]="credentials.password"></ion-input>
-        </ion-item>
+
+        <form [formGroup]="authForm" (ngSubmit)="signin()">
+          <div class="spacer" style="height: 10px;"></div>
+          <ion-item>
+            <ion-label><ion-icon name="mail" style="color:white"></ion-icon></ion-label>
+            <ion-input 
+            type="email"
+            formControlName="email" 
+            placeholder="Email" 
+            ></ion-input>
+          </ion-item>
+
+          <div class="spacer" style="height: 5px;"></div>
+          <ion-item>
+            <ion-label><ion-icon name="key" style="color:white"></ion-icon></ion-label>
+            <ion-input 
+            type="password" formControlName="password" placeholder="Password" ></ion-input>
+          </ion-item>
+        </form>
+
         <div class="spacer" style="height: 10px;"></div>
         <a (click)="passwordreset()">Forgot login details ? <b> Get Help </b></a>
+
         <div class="spacer" style="height: 10px;"></div>
         <button ion-button block round outline color="light" (click)="signin()">Login</button>
         <div class="spacer" style="height: 10px;"></div>
         <p>OR</p>
+
         <div class="spacer" style="height: 10px;"></div>
         <button ion-button clear full color="light" (click)="signup()">Don't have an account? Sign up</button>
+
       </ion-list>
     </ion-card-content>
   </ion-card>

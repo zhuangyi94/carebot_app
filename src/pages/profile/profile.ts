@@ -33,13 +33,16 @@ export class ProfilePage {
   data:string;
   calendarMsg;
   openC = true;
+  hideAnalysis = true;
 
+  randomnumber:string = "";
 
   ///
   eventSource = [];
   viewTitle: string;
   selectedDay = new Date();
   fireCalendarEvent =  firebase.database().ref('/calendarEvent');
+  fireUser = firebase.database().ref('/users');
 
   calendar = {
     mode:'month',
@@ -76,8 +79,13 @@ export class ProfilePage {
       });
   }
 
+  openChart() {
+    this.navCtrl.push('ChatAnalysisPage');
+  }
+
   openCalendar() {
-    this.openC = false;
+    //this.openC = false;
+    this.navCtrl.push('CalendarviewPage');
   } 
 
   addEvent() {
@@ -149,7 +157,7 @@ export class ProfilePage {
   }
 
   ionViewDidLoad() {
-    this.getCalendar();
+    //this.getCalendar();
 
   }
 
@@ -162,6 +170,29 @@ export class ProfilePage {
         this.avatar = res.photoURL;
       })
     })
+  }
+
+  presentConfirm() {
+  let alert = this.alertCtrl.create({
+    title: 'Confirm Call',
+    message: 'Do you want to call XXX?',
+    buttons: [
+      {
+        text: 'No',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      },
+      {
+        text: 'Yes',
+        handler: () => {
+          this.call()
+        }
+      }
+    ]
+  });
+  alert.present();
   }
 
   call() {
@@ -199,6 +230,31 @@ export class ProfilePage {
       }
     });
 
+      this.userservice.getuserdetails().then((res:any)=>{
+        console.log("first")
+        if(res.elderlyEmail==undefined){
+          this.hideAnalysis=false;
+        }else{
+          
+          this.hideAnalysis=true;
+          console.log("first and half",this.hideAnalysis)
+        } 
+      })
+
+  }
+
+  number(){
+    this.randomnumber = Math.random().toString(36).substr(2,5);
+  }
+
+  public hideAnalysisFunc(){
+    console.log("second",this.hideAnalysis)
+    
+    if(this.hideAnalysis==true){
+      return true;
+    }else{
+      return false;
+    } 
   }
 
   alertNotification() {
@@ -233,24 +289,24 @@ export class ProfilePage {
   }
 
 
-  api2() {
+  // api2() {
 
-  this.testing="hello"
+  // this.testing="hello"
 
-  let headers = {
-            "Content-Type": "application/json"
-        };
+  // let headers = {
+  //           "Content-Type": "application/json"
+  //       };
 
-  this.http.setDataSerializer('json');
-  this.http.post('http://192.168.43.10:8000/employees2/?format=json', "hello", {"Content-Type": "application/json"})
-  .then(data => {
-    this.testing="success"
-  })
-  .catch(error => {
-    this.testing="fail"
-  })
+  // this.http.setDataSerializer('json');
+  // this.http.post('http://192.168.43.10:8000/employees2/?format=json', "hello", {"Content-Type": "application/json"})
+  // .then(data => {
+  //   this.testing="success"
+  // })
+  // .catch(error => {
+  //   this.testing="fail"
+  // })
 
-  }
+  // }
 
 
   api3() {
@@ -270,29 +326,29 @@ export class ProfilePage {
 
   }
 
-  api() {
-    this.testing="hello"
+  // api() {
+  //   this.testing="hello"
 
-    this.http.get('http://192.168.43.10:8000/employees/?format=json', {}, {})
-  .then(data => {
+  //   this.http.get('http://192.168.43.10:8000/employees/?format=json', {}, {})
+  // .then(data => {
 
-    this.testing=data.data;
-    console.log(data)
-    console.log(data.status);
-    console.log(data.data); // data received by server
-    console.log(data.headers);
+  //   this.testing=data.data;
+  //   console.log(data)
+  //   console.log(data.status);
+  //   console.log(data.data); // data received by server
+  //   console.log(data.headers);
 
-  })
-  .catch(error => {
+  // })
+  // .catch(error => {
 
-     console.log(error, "fail")
-    console.log(error.status);
-    console.log(error.error); // error message as string
-    console.log(error.headers);
+  //    console.log(error, "fail")
+  //   console.log(error.status);
+  //   console.log(error.error); // error message as string
+  //   console.log(error.headers);
 
-  });
+  // });
 
-  }
+  // }
 
   editimage() {
     let statusalert = this.alertCtrl.create({

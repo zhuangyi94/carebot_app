@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable} from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { usercreds } from '../../models/interfaces/usercreds';
  
@@ -21,11 +21,13 @@ export class AuthProvider {
 */  
   
   login(credentials: usercreds) {
-    var promise = new Promise((resolve, reject) => {
+    var promise = new Promise((resolve) => {
       this.afireauth.auth.signInWithEmailAndPassword(credentials.email, credentials.password).then(() => {
         resolve(true);
       }).catch((err) => {
-        reject(err);
+        resolve(err);
+        //let alert = this.
+        //reject(err);
        })
     })
  

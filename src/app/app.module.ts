@@ -30,6 +30,10 @@ import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { CallNumber } from '@ionic-native/call-number';
 import { NgCalendarModule  } from 'ionic2-calendar';
+import { TextToSpeech } from '@ionic-native/text-to-speech'
+import { SpinnerDialog } from '@ionic-native/spinner-dialog';
+import { ChartsModule } from 'ng2-charts';
+
 
 @NgModule({
   declarations: [
@@ -39,6 +43,7 @@ import { NgCalendarModule  } from 'ionic2-calendar';
     NgCalendarModule,
     BrowserModule,
     HttpModule,
+    ChartsModule,
     //IonicModule.forRoot(MyApp),
     IonicModule.forRoot(MyApp, {tabsPlacement: 'top', scrollAssist: false, autoFocusAssist: false}),
     AngularFireModule.initializeApp(config)
@@ -68,6 +73,9 @@ import { NgCalendarModule  } from 'ionic2-calendar';
     SpeechRecognition,
     LocalNotifications,
     CallNumber,
+    TextToSpeech,
+    SpinnerDialog
+
 
     
   ]

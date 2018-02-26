@@ -10,9 +10,15 @@
 </ion-header>
  
 <ion-content>
+  <ion-card>
   <ion-list>
-    <ion-item>
+<!--     <ion-item>
+      <ion-label>Text</ion-label>
       <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+    </ion-item>
+ -->
+    <ion-item>
+      <textarea cols="35" rows="4" placeholder="Title" [(ngModel)]="event.title"></textarea>
     </ion-item>
  
     <ion-item>
@@ -29,7 +35,9 @@
       <ion-label>All Day?</ion-label>
       <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
     </ion-item>
+
   </ion-list>
+</ion-card>
  
   <button ion-button full icon-left (click)="save()">
     <ion-icon name="checkmark"></ion-icon> Add Event

@@ -25,26 +25,77 @@ export class UserProvider {
    */
 
   adduser(newuser) {
-    var promise = new Promise((resolve, reject) => {
-      this.afireauth.auth.createUserWithEmailAndPassword(newuser.email, newuser.password).then(() => {
-        this.afireauth.auth.currentUser.updateProfile({
-          displayName: newuser.displayName,
-          photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
-        }).then(() => {
-          this.firedata.child(this.afireauth.auth.currentUser.uid).set({
-            uid: this.afireauth.auth.currentUser.uid,
+
+    var promise = new Promise((resolve) => {
+
+      let allowed:boolean =true;
+      let errormsg = null;
+
+
+      if(allowed=true){
+
+
+
+        if(newuser.elderlyEmail){
+          this.firedata.orderByChild('email').equalTo(newuser.elderlyEmail).on("value", snapshot => {
+            let firedata = firebase.database().ref('/users');
+
+            let data = snapshot.val();
+            let emailCache = "";     
+                  
+            console.log(data)
+            for(let item in data){
+              emailCache = item;
+            }
+            console.log("emailCache",emailCache)
+            firedata.child(emailCache).update({
+              guardianEmail: newuser.email
+            })
+          })
+        }
+
+
+
+
+        this.afireauth.auth.createUserWithEmailAndPassword(newuser.email, newuser.password).then(() => {
+          this.afireauth.auth.currentUser.updateProfile({
             displayName: newuser.displayName,
             photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
           }).then(() => {
-            resolve({ success: true });
+            this.firedata.child(this.afireauth.auth.currentUser.uid).set({
+              uid: this.afireauth.auth.currentUser.uid,
+              displayName: newuser.displayName,
+              email: newuser.email,
+              elderlyEmail: newuser.elderlyEmail? newuser.elderlyEmail : "undefined",
+              photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
+            }).then(() => {
+              resolve({ success: true });
+              }).catch((err) => {
+                resolve(err);
+            })
             }).catch((err) => {
-              reject(err);
+              resolve(err);
           })
-          }).catch((err) => {
-            reject(err);
+        }).catch((err) => {
+          resolve(err);
         })
+      }
+      else{
+
+        resolve(errormsg)
+      }
+      
+
+    })
+    return promise;
+  }
+
+  checkEmail(newuser){
+    var promise = new Promise((resolve) => {
+    this.afireauth.auth.signInWithEmailAndPassword(newuser.elderlyEmail,newuser.password).then((resolve) => {
+        resolve({ success: true });
       }).catch((err) => {
-        reject(err);
+        resolve(err);
       })
     })
     return promise;
@@ -60,11 +111,11 @@ export class UserProvider {
    */
 
   passwordreset(email) {
-    var promise = new Promise((resolve, reject) => {
+    var promise = new Promise((resolve) => {
       firebase.auth().sendPasswordResetEmail(email).then(() => {
         resolve({ success: true });
       }).catch((err) => {
-        reject(err);
+        resolve(err);
       })
     })
     return promise;
@@ -109,6 +160,23 @@ export class UserProvider {
       resolve(snapshot.val());
     }).catch((err) => {
       reject(err);
+      })
+    })
+    return promise;
+  }
+
+  getelderlydetails(elderEmail) {
+    var promise = new Promise((resolve, reject) => {
+      this.firedata.orderByChild('email').equalTo(elderEmail).once("value", snapshot => {
+        let userdata = snapshot.val();
+        let temparr = [];
+        for (var key in userdata) {
+          temparr.push(userdata[key]);
+        }
+        console.log("check", temparr)
+        resolve(temparr);
+      }).catch((err) => {
+        reject(err);
       })
     })
     return promise;

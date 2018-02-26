@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar color="titleColor">
+    <ion-title>Role</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content style="background-color: #B4C7E8">
+	<ion-card style="background-color: blue ">
+		<ion-card-content>
+			<ion-list no-lines>
+			<H2 style="text-align: center;margin-bottom: 20px"> Are you create this account for your own sake or others?</H2>
+		</ion-list>
+		</ion-card-content>
+	</ion-card>
+	
+<!-- 	<div style="text-align: center;">
+		<div>
+			<ion-img  *ngIf="isElderly" src="assets/imgs/img4.png" width="180" height="230">
+		    </ion-img>
+		</div>
+		<div>
+			<ion-img  *ngIf="!isElderly" src="assets/imgs/img4.png" width="180" height="130">
+		    </ion-img>
+		</div>
+	</div> -->
+</ion-content>
+
+
+<ion-footer ion-fixed>    
+  <ion-toolbar class="no-border" color="white">  
+	<div class="row">
+		<div class="col col-50">
+			<button ion-button block round color="light" (click)="setRoleUser()">
+				For myself
+			</button>
+		</div>
+		<div class="col col-50">
+			<button ion-button block round color="light" (click)="setRoleGuardian()">
+				others
+			</button>
+		</div>
+	</div>
+	</ion-toolbar>
+</ion-footer>
