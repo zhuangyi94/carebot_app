@@ -38,6 +38,12 @@ export class SignupPage {
          // Validators.pattern(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i)])],
       ])],
 
+        'elderlyCode' : [null, Validators.compose([
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(5)
+          ])],
+
     });
 
     this.authForm = this.formBuilder.group({
@@ -109,12 +115,13 @@ export class SignupPage {
         email: this.authForm.value.email,
         password: this.authForm.value.password,
         displayName: this.authForm.value.displayName,
-        elderlyEmail: this.authFormExtra.value.elderlyEmail
+        elderlyEmail: this.authFormExtra.value.elderlyEmail,
+        code: this.authFormExtra.value.elderlyCode
       }
 
       this.spinnerDialog.show();
       this.userservice.checkEmail(extraForm).then((response: any) => {
-        console.log(response.code)
+        console.log("response",response.code,response)
         this.spinnerDialog.hide();
         if(response.code=="auth/email-already-in-use"){
           enableSignup=true;
@@ -124,25 +131,33 @@ export class SignupPage {
         }
       }).then(()=>{
 
-              console.log("enablesignup",enableSignup)
-
+      console.log("enablesignup",enableSignup)
       if(enableSignup==true){
-        this.spinnerDialog.show();
-        this.userservice.adduser(extraForm).then((res: any) => {
-          console.log(res)
-          this.spinnerDialog.hide();
-          if(res.success)
-            this.navCtrl.push('ProfilepicPage');
-          else if(res.code=="auth/email-already-in-use"){
-            alert.setTitle("Signup Error"),
-            alert.setSubTitle("The email address is already in use by another account.")  
-            alert.present();
-          }
-          else{
-            //alert('Error' + res);
+        this.userservice.checkCode(extraForm).then((response: any) =>{
+          if(response==true){
+            console.log("password true")
+            this.spinnerDialog.show();
+            this.userservice.adduser(extraForm).then((res: any) => {
+              console.log(res)
+              this.spinnerDialog.hide();
+              if(res.success)
+                this.navCtrl.push('ProfilepicPage');
+              else if(res.code=="auth/email-already-in-use"){
+                alert.setTitle("Signup Error"),
+                alert.setSubTitle("The email address is already in use by another account.")  
+                alert.present();
+              }
+              else{
+                //alert('Error' + res);
 
+              }
+            }) 
+          }else{
+            console.log("wrong password")
+            toaster.setMessage("Wrong code")
+            toaster.present()
           }
-        })  
+        }) 
       }
       else{
         toaster.setMessage("User not found")
@@ -161,6 +176,7 @@ export class SignupPage {
       let control_password = this.authForm.controls['password']
       let control_displayName = this.authForm.controls['displayName']
       let control_elderlyEmail = this.authFormExtra.controls['elderlyEmail']
+      let control_elderlyCode = this.authFormExtra.controls['elderlyCode']
 
      if(!control_email.valid){
         console.log("invalid control of email")
@@ -215,7 +231,22 @@ export class SignupPage {
           toaster.present();
         }         
       }
-
+      else if(!control_elderlyCode.valid){
+        console.log("invalid control of elderly email")
+        if(control_elderlyCode.errors['required']){
+          toaster.setMessage('Please fill Invitation Code.');
+          toaster.present();
+        }
+        else if(control_elderlyCode.errors['maxlength']){
+          toaster.setMessage('Code length too long.');
+          toaster.present();
+        }
+        else if(control_elderlyCode.errors['minlength']){
+          console.log("im here")
+          toaster.setMessage('Code length too short.');
+          toaster.present();
+        }        
+      }
     }
   }
 

@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angu
 import { UserProvider } from '../../providers/user/user';
 import { RequestsProvider } from '../../providers/requests/requests';
 import * as moment from 'moment';
+import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 /**
  * Generated class for the ChatAnalysisPage page.
  *
@@ -28,6 +29,7 @@ export class ChatAnalysisPage {
   public openBar = false;
   public elderlyUid = [];
   public positiveness = 0;
+  public elderlyName = "";
   //isDataAvailable:boolean = false;
 
 	public barChartData:any[] = [
@@ -60,7 +62,8 @@ export class ChatAnalysisPage {
     public navParams: NavParams,
     public userservice: UserProvider,
     public alertCtrl: AlertController,
-    public request: RequestsProvider) {
+    public request: RequestsProvider,
+    public spinner: SpinnerDialog) {
 
 
   }
@@ -73,6 +76,7 @@ export class ChatAnalysisPage {
       this.userservice.getelderlydetails(this.elderly).then((res:any) =>{
         console.log("user elderly profile", res)
 
+        this.elderlyName = res[0].displayName;
         this.elderlyUid = res[0].uid;
         this.photoUrl = res[0].photoURL;      
       }).then((res: any) => {
@@ -88,6 +92,7 @@ export class ChatAnalysisPage {
           this.doughnutChartData.push(this.neutralContent);
           this.doughnutChartData.push(this.negativeContent);
           this.openBar = true;
+          this.spinner.hide();
           //this.baseChart.update();
         })
       });
@@ -96,7 +101,12 @@ export class ChatAnalysisPage {
   }
 
   ngOnInit(){
-    this.loaduserdetails();  
+    this.spinner.show();
+    this.loaduserdetails()  
+  }
+
+  openCalendar(){
+    this.navCtrl.push('CalendarviewPage', {elderlyUid: this.elderlyUid});    
   }
 
   ionViewDidLoad() {

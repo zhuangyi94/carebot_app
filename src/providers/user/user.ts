@@ -36,7 +36,7 @@ export class UserProvider {
 
 
 
-        if(newuser.elderlyEmail){
+        if(newuser.elderlyEmail && newuser.elderlyCode){
           this.firedata.orderByChild('email').equalTo(newuser.elderlyEmail).on("value", snapshot => {
             let firedata = firebase.database().ref('/users');
 
@@ -62,11 +62,15 @@ export class UserProvider {
             displayName: newuser.displayName,
             photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
           }).then(() => {
+
+            let codes = Math.random().toString(36).substr(2,5)
+
             this.firedata.child(this.afireauth.auth.currentUser.uid).set({
               uid: this.afireauth.auth.currentUser.uid,
               displayName: newuser.displayName,
               email: newuser.email,
               elderlyEmail: newuser.elderlyEmail? newuser.elderlyEmail : "undefined",
+              code: codes,
               photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
             }).then(() => {
               resolve({ success: true });
@@ -99,6 +103,30 @@ export class UserProvider {
       })
     })
     return promise;
+  }
+
+  checkCode(newuser){
+    var promise = new Promise((resolve) => {
+        this.firedata.child(this.afireauth.auth.currentUser.uid).once('value', (snapshot) => {
+          
+          let data =  snapshot.val();
+          let temparr = [];
+          let decision = true;
+
+          for (var key in data) {
+            temparr.push(data[key]);
+          }
+          if(temparr[0]==newuser.code){
+            console.log("yea, it is true")
+            decision = true;
+          }else{
+            console.log("nope, it is false",temparr[0],newuser.elderlyCode)
+            decision = false;
+          }
+           resolve(decision)     
+        })
+    })
+    return promise
   }
 
   /*

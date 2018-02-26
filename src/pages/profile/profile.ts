@@ -85,7 +85,7 @@ export class ProfilePage {
 
   openCalendar() {
     //this.openC = false;
-    this.navCtrl.push('CalendarviewPage');
+    this.navCtrl.push('CalendarviewPage', {elderlyUid: firebase.auth().currentUser.uid});
   } 
 
   addEvent() {
@@ -231,8 +231,8 @@ export class ProfilePage {
     });
 
       this.userservice.getuserdetails().then((res:any)=>{
-        console.log("first")
-        if(res.elderlyEmail==undefined){
+        console.log("first",res)
+        if(res.elderlyEmail=="undefined"){
           this.hideAnalysis=false;
         }else{
           

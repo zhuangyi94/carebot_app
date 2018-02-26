@@ -87,14 +87,14 @@ export class ChatbotPage {
   }
 
   start() {
-    //this.speechRecognition.startListening()
-    //.subscribe(
-     //   (matches: Array<string>) => {
-      //    this.newmessage = matches[0];
+    this.speechRecognition.startListening()
+    .subscribe(
+        (matches: Array<string>) => {
+          this.newmessage = matches[0];
           this.addmessage(this.newmessage)
 
-       // }
-     // )
+        }
+      )
   }
 
   addmessage(newmessage) {
@@ -161,10 +161,11 @@ export class ChatbotPage {
 
         let headers = new Headers({ "content-type": "application/json", "Accept": "application/json" });
         let options = new RequestOptions({ headers: headers });
-        // this.http.post('http://10.207.156.182:8000/employees2/?format=json', JSON.stringify(msg), options)
+        //this.http.post('http://10.207.156.182:8000/employees2/?format=json', JSON.stringify(msg), options)
         this.http.post('http://192.168.43.10:8000/employees2/?format=json', JSON.stringify(msg), options)
+        //this.http.post('http://10.207.200.225:8000/employees2/?format=json', JSON.stringify(msg), options)
         .subscribe(data => {
-                      
+                      console.log(data)
             this.botmessage=data.json()
             this.botmessage=JSON.parse(this.botmessage)
             console.log("lets see what we received",this.botmessage)

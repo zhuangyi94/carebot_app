@@ -25,6 +25,7 @@ export class CalendarviewPage {
   selectedDay = new Date();
   calendarMsg;
   fireCalendarEvent =  firebase.database().ref('/calendarEvent');
+  source = "";
  
   calendar = {
   mode: 'month',
@@ -36,6 +37,8 @@ export class CalendarviewPage {
   	public navParams: NavParams,
   	public modalCtrl: ModalController,
   	public alertCtrl: AlertController) {
+
+
   }
 
   ionViewDidLoad() {
@@ -62,7 +65,9 @@ export class CalendarviewPage {
   // }
 
   ngOnInit(){
-    this.getCalendar();
+
+    this.source = this.navParams.data.elderlyUid;
+    this.getCalendar(this.source);
   }
 
   addEvent() {
@@ -70,7 +75,7 @@ export class CalendarviewPage {
     modal.present();
     modal.onDidDismiss(data => {
       if (data) {
-        this.getCalendar();
+        this.getCalendar(this.source);
         // let eventData = data;
  
         // eventData.startTime = new Date(data.startTime);
@@ -106,11 +111,19 @@ export class CalendarviewPage {
     this.selectedDay = ev.selectedTime;
   }
 
-  getCalendar() {
+  getCalendar(source) {
     let temp;
     let count = 0;
+    let currentUid = "";
+
+    if(source!=firebase.auth().currentUser.uid){
+      currentUid = source;
+    }else{
+      currentUid = firebase.auth().currentUser.uid;
+    }
+
     //this.eventSource = [];
-    this.fireCalendarEvent.child(firebase.auth().currentUser.uid).on('value', (snapshot) => {
+    this.fireCalendarEvent.child(currentUid).on('value', (snapshot) => {
       this.calendarMsg = [];
       temp = snapshot.val();
       console.log("temp = ",temp)
