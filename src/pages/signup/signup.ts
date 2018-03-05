@@ -69,6 +69,13 @@ export class SignupPage {
 
          ])],
 
+       'phone' : [null, Validators.compose([
+         Validators.required,
+         Validators.minLength(7),
+         Validators.maxLength(13)
+
+         ])],
+
     });    
   }
 
@@ -116,6 +123,7 @@ export class SignupPage {
         password: this.authForm.value.password,
         displayName: this.authForm.value.displayName,
         elderlyEmail: this.authFormExtra.value.elderlyEmail,
+        phone: this.authForm.value.phone,
         code: this.authFormExtra.value.elderlyCode
       }
 
@@ -154,7 +162,7 @@ export class SignupPage {
             }) 
           }else{
             console.log("wrong password")
-            toaster.setMessage("Wrong code")
+            toaster.setMessage("Wrong Invitation code")
             toaster.present()
           }
         }) 
@@ -175,8 +183,10 @@ export class SignupPage {
       let control_email = this.authForm.controls['email']
       let control_password = this.authForm.controls['password']
       let control_displayName = this.authForm.controls['displayName']
+      let control_phone = this.authForm.controls['phone']
       let control_elderlyEmail = this.authFormExtra.controls['elderlyEmail']
       let control_elderlyCode = this.authFormExtra.controls['elderlyCode']
+
 
      if(!control_email.valid){
         console.log("invalid control of email")
@@ -220,6 +230,21 @@ export class SignupPage {
           toaster.present();
         } 
       }
+      else if(!control_phone.valid){
+        //console.log("invalid control of password",control_password)
+        if(control_phone.errors['required']){
+          toaster.setMessage('Please fill phone number before summit.')
+          toaster.present();
+        }
+        else if(control_phone.errors['maxlength']){
+          toaster.setMessage('your phone number too long.');
+          toaster.present();
+        }
+        else if(control_phone.errors['minlength']){
+          toaster.setMessage('your phone number too short.');
+          toaster.present();
+        }        
+      }
       else if(!control_elderlyEmail.valid){
         console.log("invalid control of elderly email")
         if(control_elderlyEmail.errors['required']){
@@ -238,12 +263,12 @@ export class SignupPage {
           toaster.present();
         }
         else if(control_elderlyCode.errors['maxlength']){
-          toaster.setMessage('Code length too long.');
+          toaster.setMessage('Invitation code too long.');
           toaster.present();
         }
         else if(control_elderlyCode.errors['minlength']){
           console.log("im here")
-          toaster.setMessage('Code length too short.');
+          toaster.setMessage('Invitation code too short.');
           toaster.present();
         }        
       }

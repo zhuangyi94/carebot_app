@@ -5,7 +5,9 @@ import { IonicPage,
   AlertController,
   ModalController,
   Platform } from 'ionic-angular';
+import { RequestsProvider } from '../../providers/requests/requests';
 import { ImghandlerProvider } from '../../providers/imghandler/imghandler';
+import { ChatProvider } from '../../providers/chat/chat';
 import { UserProvider } from '../../providers/user/user';
 import { HTTP } from '@ionic-native/http';
 import { Http, Headers, RequestOptions } from '@angular/http';
@@ -34,6 +36,9 @@ export class ProfilePage {
   calendarMsg;
   openC = true;
   hideAnalysis = true;
+  buddy;
+  buddyName;
+  buddyPhone;
 
   randomnumber:string = "";
 
@@ -64,9 +69,23 @@ export class ProfilePage {
     public alertController: AlertController,
     public plt: Platform,
     public callNumber: CallNumber,
-    public modalCtrl: ModalController) {
+    public modalCtrl: ModalController,
+    public chatProvider: ChatProvider,
+    public requestProvider: RequestsProvider) {
 
       this.plt.ready().then( (rdy) => {
+
+
+        this.buddy = this.chatProvider.buddy;
+        console.log("buddy",this.buddy)
+        //this.buddyName = this.buddy.displayName;
+        //this.buddyPhone = this.buddy.phoneNumber;
+        this.requestProvider.getGuardianPhone().then(res=>{
+          this.buddyName = res[0].displayName;
+          this.buddyPhone = res[0].phoneNumber;
+          //console.log("hre", res)
+        })
+
         this.openC = true;
         this.localNotifications.on('click', (notification, state) =>{
 
@@ -77,6 +96,21 @@ export class ProfilePage {
           alert.present();
         });
       });
+  }
+
+  getInvitationCode() {
+    this.requestProvider.getInvitationCode().then(res=>{
+    
+      let code = res.toString();
+
+      let alert = this.alertCtrl.create({
+        title: 'Invitation Code',
+        subTitle: code,
+        buttons: ['OK']
+      })
+      
+      alert.present();
+    })
   }
 
   openChart() {
@@ -175,7 +209,7 @@ export class ProfilePage {
   presentConfirm() {
   let alert = this.alertCtrl.create({
     title: 'Confirm Call',
-    message: 'Do you want to call XXX?',
+    message: 'Do you want to call ' + this.buddyName + '?',
     buttons: [
       {
         text: 'No',
@@ -197,7 +231,7 @@ export class ProfilePage {
 
   call() {
 
-    this.callNumber.callNumber("18001010101", true)
+    this.callNumber.callNumber(this.buddyPhone, true)
   .then(() => console.log('Launched dialer!'))
   .catch(() => console.log('Error launching dialer'));
 

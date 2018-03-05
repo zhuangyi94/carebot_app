@@ -48,9 +48,9 @@ export class PasswordresetPage {
     });
 
     if(this.authForm.valid){
-      console.log("it is valid")
+      console.log("it is valid",this.authForm.value)
       this.invalidForm = false;
-      this.userservice.passwordreset(this.email).then((res: any) => {
+      this.userservice.passwordreset(this.authForm.value.email).then((res: any) => {
         console.log(res)
         if (res.success) {
           alert.setTitle('Email Sent');

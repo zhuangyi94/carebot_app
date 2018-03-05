@@ -1,7 +1,9 @@
 <ion-header>
 </ion-header>
 
+
 <ion-content class="background">
+  <ion-scroll scrollY="true" style="width: 100%; height: 100%;">
 <ion-card>
 
   <ion-card-header style="color:black">
@@ -19,6 +21,9 @@
        <ion-item>  
            <ion-input type="text" placeholder="Nick Name" formControlName="displayName"></ion-input>
        </ion-item>
+       <ion-item>  
+           <ion-input type="text" placeholder="Phone Number" formControlName="phone"></ion-input>
+       </ion-item>
      </form>
      </ion-list>    
   </ion-card-content>
@@ -30,7 +35,7 @@
         <ion-input type="email" placeholder="Email" formControlName="elderlyEmail"></ion-input>
       </ion-item>
       <ion-item>  
-        <ion-input type="code" placeholder="Code" formControlName="elderlyCode"></ion-input>
+        <ion-input type="code" placeholder="Invitation Code" formControlName="elderlyCode"></ion-input>
       </ion-item>
   </ion-card>
   </form>
@@ -42,4 +47,5 @@
 
 
 </ion-card>
+</ion-scroll>
 </ion-content>

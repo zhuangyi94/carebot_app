@@ -64,12 +64,14 @@ export class UserProvider {
           }).then(() => {
 
             let codes = Math.random().toString(36).substr(2,5)
+            console.log("newuser",newuser)
 
             this.firedata.child(this.afireauth.auth.currentUser.uid).set({
               uid: this.afireauth.auth.currentUser.uid,
               displayName: newuser.displayName,
               email: newuser.email,
               elderlyEmail: newuser.elderlyEmail? newuser.elderlyEmail : "undefined",
+              phoneNumber: newuser.phone,
               code: codes,
               photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
             }).then(() => {
@@ -139,6 +141,7 @@ export class UserProvider {
    */
 
   passwordreset(email) {
+    console.log(email)
     var promise = new Promise((resolve) => {
       firebase.auth().sendPasswordResetEmail(email).then(() => {
         resolve({ success: true });
@@ -238,8 +241,13 @@ export class UserProvider {
       this.firedata.orderByChild('uid').once('value', (snapshot) => {
         let userdata = snapshot.val();
         let temparr = [];
+
+        console.log(snapshot.val())
         for (var key in userdata) {
-          temparr.push(userdata[key]);
+          if(userdata[key].uid!=this.afireauth.auth.currentUser.uid){
+             temparr.push(userdata[key]);           
+          }
+
         }
         resolve(temparr);
       }).catch((err) => {

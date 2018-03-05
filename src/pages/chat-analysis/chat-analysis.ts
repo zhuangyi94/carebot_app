@@ -47,6 +47,19 @@ export class ChatAnalysisPage {
 	  // responsive: true
 	};
 
+  barChartColors: any [] =[
+    {
+        backgroundColor:'rgba(255, 99, 132, 1)',
+        // borderColor: "rgba(10,150,132,1)",
+        borderWidth: 5
+    }
+    // {
+    //     backgroundColor:'rgb(97 174 55, 1 )',
+    //     borderColor: "rgba(10,150,132,1)",
+    //     borderWidth: 5,
+    // }
+  ]
+
 
 
 	//Doughnut
@@ -86,6 +99,12 @@ export class ChatAnalysisPage {
           this.positiveContent = res.positive;
           this.neutralContent = res.neutral;
           this.negativeContent = res.negative;
+
+          if(this.positiveness>5){
+            this.barChartColors.pop();
+            this.barChartColors.push({backgroundColor:'rgba(97, 174, 55, 1)', borderWidth: 5});
+          }
+
           this.barChartData.pop();
           this.barChartData.push({data: [this.positiveness], label: 'Conversation positiveness'});
           this.doughnutChartData.push(this.positiveContent);

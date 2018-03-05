@@ -1,5 +1,5 @@
 import { Component, ViewChild, NgZone } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, Content, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, Content, LoadingController, AlertController } from 'ionic-angular';
 import { ChatProvider } from '../../providers/chat/chat';
 import { ImghandlerProvider } from '../../providers/imghandler/imghandler';
 import { Http, Headers, RequestOptions } from '@angular/http';
@@ -7,6 +7,7 @@ import firebase from 'firebase';
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { RequestsProvider } from '../../providers/requests/requests';
+import * as moment from 'moment';
 /**
  * Generated class for the ChatbotPage page.
  *
@@ -44,7 +45,8 @@ export class ChatbotPage {
     public http: Http,
     public speechRecognition: SpeechRecognition,
     public texttoSpeeech: TextToSpeech,
-    public request: RequestsProvider){
+    public request: RequestsProvider,
+    public alertCtrl: AlertController){
 
     this.days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
     this.buddy = this.chatservice.buddy;
@@ -100,12 +102,13 @@ export class ChatbotPage {
   addmessage(newmessage) {
 
     this.chatservice.addnewmessage(newmessage).then(() => {
+      this.api3(newmessage)
       this.content.scrollToBottom();
       this.newmessage = '';
     })
 
     //if(this.setSchedulePara==false){
-      this.api3(newmessage)
+
     //}
     //else{
       //this.setupSchedule(newmessage)
@@ -155,6 +158,29 @@ export class ChatbotPage {
 
   }
 
+
+  public organizeDialog(res){
+
+    let content = "";
+    let temp = [];
+
+      temp = res;
+      temp.forEach(r=>{
+        let date = new Date(r.startTime);
+        let dates = moment(date).format('lll'); ;
+        content+="<li>" + dates + "<br>" + r.title +'</li>';
+      })    
+    console.log("content", content)
+
+
+    let alert = this.alertCtrl.create({
+      title:"Schedule",
+      subTitle:content,
+      buttons:['Close']
+    })
+      alert.present();
+  }
+
     api3(msg) {
 
       console.log("im here!",msg)
@@ -162,6 +188,7 @@ export class ChatbotPage {
         let headers = new Headers({ "content-type": "application/json", "Accept": "application/json" });
         let options = new RequestOptions({ headers: headers });
         //this.http.post('http://10.207.156.182:8000/employees2/?format=json', JSON.stringify(msg), options)
+        //this.http.post('http://192.168.1.14:8000/employees2/?format=json', JSON.stringify(msg), options)
         this.http.post('http://192.168.43.10:8000/employees2/?format=json', JSON.stringify(msg), options)
         //this.http.post('http://10.207.200.225:8000/employees2/?format=json', JSON.stringify(msg), options)
         .subscribe(data => {
@@ -174,8 +201,17 @@ export class ChatbotPage {
               this.request.getCalendarDetails().then((res:any) => {
                 console.log("request",res)
                 this.testing=res;
+                this.organizeDialog(this.testing);
                 //this.botmessage=res;
               })
+            }
+
+            if(this.botmessage.polarity[0]< (-0.4)){
+              console.log("sad!!!!!")
+              this.botmessage.message = this.botmessage.message + " . If you faced any difficulties, don't hesitate to contact your family, they are always ready for you."
+            }
+            else if(this.botmessage.polarity[0]< (-0.7)){
+              this.botmessage.message = this.botmessage.message + "Do you need me contact your family? im really worried about you."
             }
             // console.log("nested botmsg= ",this.botmessage.polarity, this.botmessage, this.botmessage.message)
             // if(this.botmessage=="May i know the time u would like to set up?"){
@@ -191,7 +227,7 @@ export class ChatbotPage {
           polarity: this.botmessage.polarity[0],
           timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            this.texttoSpeeech.speak(this.botmessage)
+            this.texttoSpeeech.speak(this.botmessage.message)
             resolve(true);
             }).catch((err) => {
               reject(err);

@@ -1,12 +1,12 @@
 <ion-header>
 
   <ion-navbar color="titleColor">
-    <ion-title>Chats</ion-title>
-<!--     <ion-buttons end>
-      <button ion-button icon-only (click)="presentConfirm()">
-        <ion-icon name="call"></ion-icon>
+    <ion-title>Carebot</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="getInvitationCode()">
+        <ion-icon name="code"></ion-icon>
       </button>
-    </ion-buttons>  -->
+    </ion-buttons> 
   </ion-navbar>
 
 </ion-header>
@@ -37,7 +37,7 @@
       <button ion-button round (click)="openCalendar()">
         <ion-icon name="calendar"></ion-icon>
       </button>
-      <button ion-button round (click)="presentConfirm()">
+      <button ion-button round (click)="presentConfirm()" *ngIf="!hideAnalysis">
         <ion-icon name="call"></ion-icon>
       </button>
       <!-- <div *ngIf="hideAnalysis"> -->

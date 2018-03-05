@@ -143,7 +143,7 @@ export class RequestsProvider {
       this.userservice.getallusers().then((users) => {
         this.myGuardian = [];
           for (var key in users) {
-            if (email[3] === users[key].email) {
+            if (email[3] === users[key].elderlyEmail) {
               this.myGuardian.push(users[key]);
             }
           }
@@ -172,7 +172,7 @@ export class RequestsProvider {
       this.userservice.getallusers().then((users) => {
         this.myElderly = [];
           for (var key in users) {
-            if (email[1] === users[key].email) {
+            if (email[2] === users[key].email) {
               this.myElderly.push(users[key]);
             }
           }
@@ -222,11 +222,25 @@ export class RequestsProvider {
           for(var i in botmsg){
             if(botmsg[i].sentby=='bot' && botmsg[i].message!='welcome'){
 
+              
               let value = (Number(botmsg[i].polarity))*2;
+              console.log("before value", value)
               if(value==0){
-                value=5;
+                value=0.5;
                 analysis.neutral++;
-              }else if(value>0){
+              }else if(value==-1){
+                value=0;
+                analysis.negative++; 
+              }
+              else if(value==1){
+                value=1;
+                analysis.positive++;
+              }
+              else if(value>1){
+                value=1;
+                analysis.positive++;
+              }
+              else if(value>0){
                 analysis.positive++;
               }else{
                 analysis.negative++;
@@ -235,9 +249,10 @@ export class RequestsProvider {
               analysis.polarity+=value;
               //console.log("p",polarity)
               count++;
+              console.log("value",value)
             }
           }
-          analysis.polarity = analysis.polarity/count;
+          analysis.polarity = (analysis.polarity/count)*10;
           resolve(analysis)
       })
     })
@@ -262,9 +277,63 @@ export class RequestsProvider {
       })
     })
     return promise;
-  }  
+  } 
 
 
+
+  getGuardianPhone(){
+
+    var promise = new Promise ((resolve,reject) => {
+
+    let myGuardian = [];
+    let email = [];
+    this.user.child(firebase.auth().currentUser.uid).on('value', (snapshot) => {
+      let elderly = snapshot.val();
+      //this.myElderly = [];
+      for (var i in elderly)
+          email.push(elderly[i]);         
+
+
+      console.log("elderly")
+      this.userservice.getallusers().then((users) => {
+        //this.myGuardian = [];
+          for (var key in users) {
+            if (email[3] === users[key].elderlyEmail) {
+              myGuardian.push(users[key]);
+            }
+          }
+          console.log("elderly",myGuardian)
+          resolve(myGuardian)
+        //this.events.publish('elderly');
+      }).catch((err) => {
+        alert(err);
+      })      
+
+      })
+  })
+  return promise;
+  }
+ 
+
+  getInvitationCode(){
+
+    var promise = new Promise ((resolve,reject) => {
+
+    let code: string;
+    let information = [];
+    this.user.child(firebase.auth().currentUser.uid).on('value', (snapshot) => {
+      let elderly = snapshot.val();
+      //this.myElderly = [];
+      for (var i in elderly)
+          information.push(elderly[i]);         
+      })
+
+      code = information[0];
+      console.log(code)
+      resolve(code);
+  })
+  return promise;
+  }
 
 
 }

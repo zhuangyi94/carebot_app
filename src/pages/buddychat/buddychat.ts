@@ -1,8 +1,10 @@
 import { Component, ViewChild, NgZone } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, Content, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, Content, LoadingController, AlertController } from 'ionic-angular';
 import { ChatProvider } from '../../providers/chat/chat';
 import { ImghandlerProvider } from '../../providers/imghandler/imghandler';
 import firebase from 'firebase';
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { CallNumber } from '@ionic-native/call-number';
 /**
  * Generated class for the BuddychatPage page.
  *
@@ -21,10 +23,18 @@ export class BuddychatPage {
   allmessages = [];
   photoURL;
   imgornot;
+  buddyName;
+  phoneNumber;
+
   constructor(public navCtrl: NavController, public navParams: NavParams, public chatservice: ChatProvider,
     public events: Events, public zone: NgZone, public loadingCtrl: LoadingController,
-    public imgstore: ImghandlerProvider) {
+    public imgstore: ImghandlerProvider, public call: CallNumber, public alertCtrl: AlertController,
+    public speechRec: SpeechRecognition) {
+
     this.buddy = this.chatservice.buddy;
+    console.log("buddy",this.buddy)
+    this.phoneNumber = this.buddy.phoneNumber;
+    this.buddyName = this.buddy.displayName;
     this.photoURL = firebase.auth().currentUser.photoURL;
     this.scrollto();
     this.events.subscribe('newmessage', () => {
@@ -44,8 +54,51 @@ export class BuddychatPage {
     })
   }
 
-  addmessage() {
-    this.chatservice.addnewmessage(this.newmessage).then(() => {
+  callNumber() {
+
+  this.call.callNumber(this.phoneNumber, true)
+  .then(() => console.log('Launched dialer!'))
+  .catch(() => console.log('Error launching dialer'));
+
+  }
+
+  presentConfirm() {
+  let alert = this.alertCtrl.create({
+    title: 'Confirm Call',
+    message: 'Do you want to call ' + this.buddyName + '?' ,
+    buttons: [
+      {
+        text: 'No',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      },
+      {
+        text: 'Yes',
+        handler: () => {
+          this.callNumber()
+        }
+      }
+    ]
+  });
+  alert.present();
+  }
+
+  start() {
+    this.speechRec.startListening()
+    .subscribe(
+        (matches: Array<string>) => {
+          this.newmessage = matches[0];
+          this.addmessage(this.newmessage)
+
+        }
+      )
+  }
+
+
+  addmessage(newmessage) {
+    this.chatservice.addnewmessage(newmessage).then(() => {
       this.content.scrollToBottom();
       this.newmessage = '';
     })
@@ -76,5 +129,6 @@ export class BuddychatPage {
       alert(err);
       loader.dismiss();
     })
+    loader.dismiss();
   }
 }
