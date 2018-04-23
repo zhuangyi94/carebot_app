@@ -13,9 +13,11 @@ import { HTTP } from '@ionic-native/http';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import firebase from 'firebase';
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
-import { LocalNotifications } from '@ionic-native/local-notifications'
+//import { LocalNotifications } from '@ionic-native/local-notifications';
 import { CallNumber } from '@ionic-native/call-number';
 import * as moment from 'moment';
+import { NetworkInterface } from '@ionic-native/network-interface';
+declare var networkinterface: any;
 //import { CalendarModule } from 'ionic2-calendar2';
 /**
  * Generated class for the ProfilePage page.
@@ -29,6 +31,7 @@ import * as moment from 'moment';
   templateUrl: 'profile.html',
 })
 export class ProfilePage {
+
   avatar: string;
   displayName: string;
   testing: string;
@@ -39,6 +42,10 @@ export class ProfilePage {
   buddy;
   buddyName;
   buddyPhone;
+  elderly;
+  elderlyUid;
+  elderlyPolarity;
+  elderlypolaritywarning;
 
   randomnumber:string = "";
 
@@ -53,6 +60,8 @@ export class ProfilePage {
     mode:'month',
     currentDate: this.selectedDay
   }
+
+  networks = "hoho";
   ///
 
 
@@ -65,15 +74,20 @@ export class ProfilePage {
     public http: HTTP, 
     public http2: Http,
     public speechRecognition: SpeechRecognition,
-    public localNotifications: LocalNotifications,
+    //public localNotifications: LocalNotifications,
     public alertController: AlertController,
     public plt: Platform,
     public callNumber: CallNumber,
     public modalCtrl: ModalController,
     public chatProvider: ChatProvider,
-    public requestProvider: RequestsProvider) {
+    public requestProvider: RequestsProvider,
+    public networkInterfaces: NetworkInterface) {
+     this.networkInterfaces.getWiFiIPAddress().then(result=>{
+       this.networks = result;
+     });
 
       this.plt.ready().then( (rdy) => {
+
 
 
         this.buddy = this.chatProvider.buddy;
@@ -87,15 +101,56 @@ export class ProfilePage {
         })
 
         this.openC = true;
-        this.localNotifications.on('click', (notification, state) =>{
+        // this.localNotifications.on('click', (notification, state) =>{
 
-          let alert = this.alertController.create({
-            title: notification.title,
-            subTitle: notification.data.mydata
-          });
-          alert.present();
-        });
+        //   let alert = this.alertController.create({
+        //     title: notification.title,
+        //     subTitle: notification.data.mydata
+        //   });
+        //   alert.present();
+        // });
       });
+  }
+
+  getElderlyScore() {
+      this.userservice.getuserdetails().then((res: any) => {
+        this.elderly = res.elderlyEmail;
+        
+      }).then((res: any) => {
+        this.userservice.getelderlydetails(this.elderly).then((res:any) =>{
+          //if(res!=[]){
+            console.log("res here",res)
+            this.elderlyUid = res[0].uid; 
+         // }   
+        }).then((res: any) => {
+          this.requestProvider.getElderlyPolarity(this.elderlyUid, true).then((res:any) => {
+            
+            //res.polarity=res.polarity-6;
+            console.log(res.polarity)
+            if(res.polarity<5){
+              this.elderlypolaritywarning = true;
+              this.elderlyPolarity = res.polarity;
+            }else{
+              this.elderlypolaritywarning = false;
+              this.elderlyPolarity = res.polarity;              
+            }
+
+          })
+        });
+
+      })
+    }
+
+    warning() {
+
+    if(this.elderlypolaritywarning==true){
+    let alert = this.alertCtrl.create({
+      title:"Attention!",
+      subTitle:"Elderly emotion score is lower than average score, please pay more attention!",
+      buttons:['Close']
+    })
+      alert.present();
+    }
   }
 
   getInvitationCode() {
@@ -113,6 +168,14 @@ export class ProfilePage {
     })
   }
 
+  getIpAddress() {
+    
+    networkinterface.getWiFiIPAddress((ip)=>{
+      this.networks= "kk";
+      this.networks = ip;
+    })
+  }
+
   openChart() {
     this.navCtrl.push('ChatAnalysisPage');
   }
@@ -120,7 +183,8 @@ export class ProfilePage {
   openCalendar() {
     //this.openC = false;
     this.navCtrl.push('CalendarviewPage', {elderlyUid: firebase.auth().currentUser.uid});
-  } 
+  }
+
 
   addEvent() {
     let modal = this.modalCtrl.create('CalendarPage', {selectedDay: this.selectedDay});
@@ -240,6 +304,9 @@ export class ProfilePage {
   
 
   ngOnInit() {
+
+    this.getElderlyScore();
+
     this.speechRecognition.hasPermission()
     .then((hasPermission: boolean) => {
 
@@ -252,17 +319,17 @@ export class ProfilePage {
       }
     });
 
-    this.localNotifications.hasPermission()
-    .then((hasPermission: boolean) => {
+    // this.localNotifications.hasPermission()
+    // .then((hasPermission: boolean) => {
 
-      if(!hasPermission){
-        this.speechRecognition.requestPermission()
-        .then(
-            () => console.log('Granted'),
-            () => console.log('Deneied')
-          )
-      }
-    });
+    //   if(!hasPermission){
+    //     this.speechRecognition.requestPermission()
+    //     .then(
+    //         () => console.log('Granted'),
+    //         () => console.log('Deneied')
+    //       )
+    //   }
+    // });
 
       this.userservice.getuserdetails().then((res:any)=>{
         console.log("first",res)
@@ -301,15 +368,15 @@ export class ProfilePage {
 
   }
 
-  scheduleNotification() {
-    this.localNotifications.schedule({
-      id: 1,
-      title: 'Attention',
-      text: 'My Notification dude',
-      at: new Date(new Date().getTime() + 5*1000),
-      data: { mydata: 'My hidden mesage this is'}
-    });
-  }
+  // scheduleNotification() {
+  //   // this.localNotifications.schedule({
+  //   //   id: 1,
+  //   //   title: 'Attention',
+  //   //   text: 'My Notification dude',
+  //   //   at: new Date(new Date().getTime() + 5*1000),
+  //   //   data: { mydata: 'My hidden mesage this is'}
+  //   // });
+  // }
 
   start() {
     this.speechRecognition.startListening()

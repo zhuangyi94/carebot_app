@@ -190,8 +190,7 @@ export class RequestsProvider {
 
     var promise = new Promise ((resolve,reject) => {
       let msg = [];
-      this.bot.child(elderUid).on('value', (snapshot) => {
-        
+      this.bot.child(elderUid).on('value', (snapshot) => {        
         let elderlymsg = snapshot.val();
         this.myBotMsg = [];
           for(var i in elderlymsg){
@@ -205,7 +204,7 @@ export class RequestsProvider {
     return promise;
   }
 
-  getElderlyPolarity(elderUid){
+  getElderlyPolarity(elderUid,checkWeekly){
 
     var promise = new Promise ((resolve,reject) =>{
       //let polarity = 0;
@@ -221,38 +220,100 @@ export class RequestsProvider {
         let botmsg = snapshot.val();
           for(var i in botmsg){
             if(botmsg[i].sentby=='bot' && botmsg[i].message!='welcome'){
+               //console.log(new Date(botmsg[i].timestamp))
+                console.log("botmsg", botmsg[i].message)
+                var curr = new Date;
+                //console.log("curr",curr.getDay())
+                var timestamps = new Date(botmsg[i].timestamp);
+                
+                var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay() +1));
+                firstday.setHours(0,0,0,0);
 
-              
-              let value = (Number(botmsg[i].polarity))*2;
-              console.log("before value", value)
-              if(value==0){
-                value=0.5;
-                analysis.neutral++;
-              }else if(value==-1){
-                value=0;
-                analysis.negative++; 
-              }
-              else if(value==1){
-                value=1;
-                analysis.positive++;
-              }
-              else if(value>1){
-                value=1;
-                analysis.positive++;
-              }
-              else if(value>0){
-                analysis.positive++;
-              }else{
-                analysis.negative++;
-              }
-              Math.abs(value);
-              analysis.polarity+=value;
-              //console.log("p",polarity)
-              count++;
-              console.log("value",value)
+                var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() +7));
+                lastday.setHours(23,59,0,0);
+                
+                var firstdayofMonth = new Date(curr.setDate(1));
+                firstdayofMonth.setHours(0,0,0,0);
+
+                var lastdayofMonth = new Date(curr.setDate(31));
+                lastdayofMonth.setHours(23,59,0,0)
+
+                console.log("firstday",firstday)
+                console.log("lastday",lastday)
+                // console.log("firstmonth",firstdayofMonth)
+                // console.log("lastdayofmonth",lastdayofMonth)
+                // console.log("checkweekly = ", checkWeekly)
+                // console.log("timestamp = ", timestamps)
+
+                if(checkWeekly==true){
+                      if(firstday<=timestamps && lastday>=timestamps)
+                      {
+                      let value = (Number(botmsg[i].polarity))*2;
+                      console.log("before value", value)
+                      if(value==0){
+                        value=0.5;
+                        analysis.neutral++;
+                      }else if(value==-1){
+                        value=0;
+                        analysis.negative++; 
+                      }
+                      else if(value==1){
+                        value=1;
+                        analysis.positive++;
+                      }
+                      else if(value>1){
+                        value=1;
+                        analysis.positive++;
+                      }
+                      else if(value>0){
+                        analysis.positive++;
+                      }else{
+                        analysis.negative++;
+                      }
+                      Math.abs(value);
+                      analysis.polarity+=value;
+                      //console.log("p",polarity)
+                      count++;
+                      console.log("value",value)                  
+                      }
+
+                }else{
+                    if(firstdayofMonth<=timestamps && lastdayofMonth>=timestamps){
+                        let value = (Number(botmsg[i].polarity))*2;
+                        console.log("before value", value)
+                        if(value==0){
+                          value=0.5;
+                          analysis.neutral++;
+                        }else if(value==-1){
+                          value=0;
+                          analysis.negative++; 
+                        }
+                        else if(value==1){
+                          value=1;
+                          analysis.positive++;
+                        }
+                        else if(value>1){
+                          value=1;
+                          analysis.positive++;
+                        }
+                        else if(value>0){
+                          analysis.positive++;
+                        }else{
+                          analysis.negative++;
+                        }
+                        Math.abs(value);
+                        analysis.polarity+=value;
+                        //console.log("p",polarity)
+                        count++;
+                        console.log("value",value)                      
+                      }
+
+                }             
+
             }
           }
           analysis.polarity = (analysis.polarity/count)*10;
+
           resolve(analysis)
       })
     })

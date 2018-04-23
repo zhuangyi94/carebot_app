@@ -8,6 +8,7 @@ import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { RequestsProvider } from '../../providers/requests/requests';
 import * as moment from 'moment';
+import { NetworkInterface } from '@ionic-native/network-interface';
 /**
  * Generated class for the ChatbotPage page.
  *
@@ -33,6 +34,7 @@ export class ChatbotPage {
   setSchedulePara;
   days;
   testing;
+  ipAddress;
 
   constructor(
   	public navCtrl: NavController, 
@@ -46,7 +48,10 @@ export class ChatbotPage {
     public speechRecognition: SpeechRecognition,
     public texttoSpeeech: TextToSpeech,
     public request: RequestsProvider,
-    public alertCtrl: AlertController){
+    public alertCtrl: AlertController,
+    public networkInterface: NetworkInterface){
+
+
 
     this.days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
     this.buddy = this.chatservice.buddy;
@@ -74,6 +79,7 @@ export class ChatbotPage {
 
   ngOnInit() {
 
+    //this.getIpAddress();
     this.speechRecognition.hasPermission()
     .then((hasPermission: boolean) => {
 
@@ -87,6 +93,13 @@ export class ChatbotPage {
     });
 
   }
+
+  // getIpAddress(){
+  //   this.networkInterface.getWiFiIPAddress().then(result => {
+  //     console.log(result);
+  //     this.ipAddress = result;
+  //   })
+  // }
 
   start() {
     this.speechRecognition.startListening()
@@ -187,10 +200,12 @@ export class ChatbotPage {
 
         let headers = new Headers({ "content-type": "application/json", "Accept": "application/json" });
         let options = new RequestOptions({ headers: headers });
-        //this.http.post('http://10.207.156.182:8000/employees2/?format=json', JSON.stringify(msg), options)
-        //this.http.post('http://192.168.1.14:8000/employees2/?format=json', JSON.stringify(msg), options)
-        this.http.post('http://192.168.43.10:8000/employees2/?format=json', JSON.stringify(msg), options)
-        //this.http.post('http://10.207.200.225:8000/employees2/?format=json', JSON.stringify(msg), options)
+        //this.http.post('http://10.207.156.182:8000/carebot_repo/?format=json', JSON.stringify(msg), options)
+        //this.http.post('http://192.168.1.14:8000/carebot_repo/?format=json', JSON.stringify(msg), options)
+        //this.http.post('http://10.207.200.145:8000/carebot_repo/?format=json', JSON.stringify(msg), options)
+        //this.http.post('http://192.168.43.10:8000/carebot_repo/?format=json', JSON.stringify(msg), options)
+        this.http.post('http://192.168.43.169:8000/carebot_repo/?format=json', JSON.stringify(msg), options)
+        //this.http.post('http://10.207.200.225:8000/carebot_repo/?format=json', JSON.stringify(msg), options)
         .subscribe(data => {
                       console.log(data)
             this.botmessage=data.json()

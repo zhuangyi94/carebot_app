@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController,LoadingController } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 import { RequestsProvider } from '../../providers/requests/requests';
 import * as moment from 'moment';
@@ -20,7 +20,6 @@ import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 
 export class ChatAnalysisPage {
 
-
 	public barChartLabels:string[] = ['Polarity'];
 	public barChartType:string = 'horizontalBar';
 	public barChartLegend:boolean = true;
@@ -30,6 +29,8 @@ export class ChatAnalysisPage {
   public elderlyUid = [];
   public positiveness = 0;
   public elderlyName = "";
+  public checkweekly: boolean = true;
+
   //isDataAvailable:boolean = false;
 
 	public barChartData:any[] = [
@@ -76,7 +77,8 @@ export class ChatAnalysisPage {
     public userservice: UserProvider,
     public alertCtrl: AlertController,
     public request: RequestsProvider,
-    public spinner: SpinnerDialog) {
+    public spinner: SpinnerDialog,
+    public loadingCtrl: LoadingController) {
 
 
   }
@@ -93,9 +95,15 @@ export class ChatAnalysisPage {
         this.elderlyUid = res[0].uid;
         this.photoUrl = res[0].photoURL;      
       }).then((res: any) => {
-        this.request.getElderlyPolarity(this.elderlyUid).then((res:any) => {
-          console.log("res",res)
-          this.positiveness = res.polarity;
+        this.request.getElderlyPolarity(this.elderlyUid, this.checkweekly).then((res:any) => {
+          
+          if(res.polarity==NaN){
+            this.positiveness = 0;
+          }else{
+            this.positiveness = res.polarity;
+          }
+
+          //this.positiveness = res.polarity;
           this.positiveContent = res.positive;
           this.neutralContent = res.neutral;
           this.negativeContent = res.negative;
@@ -105,18 +113,43 @@ export class ChatAnalysisPage {
             this.barChartColors.push({backgroundColor:'rgba(97, 174, 55, 1)', borderWidth: 5});
           }
 
+          console.log("res",res)
           this.barChartData.pop();
           this.barChartData.push({data: [this.positiveness], label: 'Conversation positiveness'});
+          this.doughnutChartData = [];
           this.doughnutChartData.push(this.positiveContent);
           this.doughnutChartData.push(this.neutralContent);
           this.doughnutChartData.push(this.negativeContent);
+          //this.openBar = false;
           this.openBar = true;
+
+
+          //this.barChartData.update();
+
           this.spinner.hide();
           //this.baseChart.update();
         })
       });
 
     })
+  }
+
+  changeToWeekView(){
+
+    this.checkweekly = true;
+    this.loaduserdetails();
+    this.openBar = false;
+    //this.openBar = true;
+
+  }
+
+  changeToMonthView(){
+
+    this.checkweekly = false;
+   // this.barChartData.pop();
+    this.loaduserdetails();
+    this.openBar = false;
+
   }
 
   ngOnInit(){

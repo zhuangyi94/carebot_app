@@ -12,13 +12,13 @@
 </ion-header>
 
 <ion-content>
-  <div>
+  <div style = "height: 200px; width: 300px; margin-left: 30px">
     <div class="profile-image" (click)="editimage()">
       <img src="{{photoUrl}}">
     </div>
   </div>
-  <div style = "height: 30px"></div>
-  <div style = "height: 180px; width: 320px; text-align: center;">
+  <div style = "height: 20px"></div>
+  <div style = "height: 160px; width: 300px; text-align: center;">
     <div style="display: block; margin-left: 20px" *ngIf="openBar"> 
       <canvas baseChart
               [datasets]="barChartData"
@@ -40,16 +40,29 @@
                   (chartClick)="chartClicked($event)"></canvas>
     </div>
   </div>
+
+  <div style="display: inline; margin-left: 50px; margin-right: 50px; margin-bottom: 10px">
+  <ion-segment [(ngModel)]="icons" color="primary">
+    <ion-segment-button value="Weekly" (click)="changeToWeekView()">
+      Weekly
+    </ion-segment-button>
+    <ion-segment-button value="Monthly" (click)="changeToMonthView()">
+      Monthly
+    </ion-segment-button>
+  </ion-segment>
+  </div>
+
   <div (click)="showDialog()" style="text-align: center;">Show previous conversation records</div>
 <!--   <div style = "height:80px; width: 320px; border:1px solid #f00; text-align: center; margin:0 auto;">
 
   </div> -->
-</ion-content>
 
+
+</ion-content>
 <ion-footer ion-fixed>    
   <ion-toolbar class="no-border" color="white">    
   <div style="text-align: center">
-    <div class="row">
+      <div class="row">
       <div class="col col-50">
         <button ion-button block round color="light" (click)="setBar()">
           Bar

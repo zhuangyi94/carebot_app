@@ -2,6 +2,11 @@
 
   <ion-navbar color="titleColor">
     <ion-title>Carebot</ion-title>
+    <ion-buttons left>
+      <button ion-button icon-only *ngIf="elderlypolaritywarning" (click)="warning()">
+        <ion-icon name="alert"></ion-icon>
+      </button>
+    </ion-buttons> 
     <ion-buttons end>
       <button ion-button icon-only (click)="getInvitationCode()">
         <ion-icon name="code"></ion-icon>
@@ -28,13 +33,17 @@
 <!--     <button ion-button round outline color="danger" (click)="number()">Logout</button>
     {{randomnumber}} -->
 </div>
+<!-- <div>
+  <button ion-button round outline color="danger" (click)="getIpAddress()">Logout</button>
+  {{networks}}
+</div> -->
 
 </ion-content>
 
 <ion-footer ion-fixed>    
   <ion-toolbar class="no-border" color="white">    
   <div style="text-align: center;">    
-      <button ion-button round (click)="openCalendar()">
+      <button ion-button round (click)="openCalendar()" *ngIf="!hideAnalysis">
         <ion-icon name="calendar"></ion-icon>
       </button>
       <button ion-button round (click)="presentConfirm()" *ngIf="!hideAnalysis">

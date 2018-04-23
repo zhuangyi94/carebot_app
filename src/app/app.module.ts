@@ -33,7 +33,7 @@ import { NgCalendarModule  } from 'ionic2-calendar';
 import { TextToSpeech } from '@ionic-native/text-to-speech'
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { ChartsModule } from 'ng2-charts';
-
+import { NetworkInterface } from '@ionic-native/network-interface';
 
 @NgModule({
   declarations: [
@@ -74,7 +74,8 @@ import { ChartsModule } from 'ng2-charts';
     LocalNotifications,
     CallNumber,
     TextToSpeech,
-    SpinnerDialog
+    SpinnerDialog,
+    NetworkInterface
 
 
     

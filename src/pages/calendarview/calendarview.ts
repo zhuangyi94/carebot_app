@@ -6,6 +6,7 @@ import { IonicPage,
 	ModalController } from 'ionic-angular';
 import * as moment from 'moment';
 import firebase from 'firebase';
+//import { LocalNotifications } from '@ionic-native/local-notifications';
 /**
  * Generated class for the CalendarviewPage page.
  *
@@ -36,7 +37,9 @@ export class CalendarviewPage {
   	public navCtrl: NavController, 
   	public navParams: NavParams,
   	public modalCtrl: ModalController,
-  	public alertCtrl: AlertController) {
+  	public alertCtrl: AlertController,
+    //public localNot: LocalNotifications
+    ) {
 
 
   }
@@ -68,6 +71,17 @@ export class CalendarviewPage {
 
     this.source = this.navParams.data.elderlyUid;
     this.getCalendar(this.source);
+    // this.localNot.hasPermission()
+    // .then((hasPermission: boolean) => {
+
+    //   if(!hasPermission){
+    //     this.localNot.requestPermission()
+    //     .then(
+    //         () => console.log('Granted'),
+    //         () => console.log('Deneied')
+    //       )
+    //   }
+    // });
   }
 
   addEvent() {
@@ -75,7 +89,16 @@ export class CalendarviewPage {
     modal.present();
     modal.onDidDismiss(data => {
       if (data) {
+        console.log("data",data)
         this.getCalendar(this.source);
+        
+        // this.localNot.schedule({
+        //    text: 'Delayed ILocalNotification',
+        //    trigger: { at: data.startTime},
+        //    led: 'FF0000',
+        //    sound: null
+        // });     
+
         // let eventData = data;
  
         // eventData.startTime = new Date(data.startTime);

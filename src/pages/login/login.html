@@ -25,8 +25,8 @@
         <form [formGroup]="authForm" (ngSubmit)="signin()">
           <div class="spacer" style="height: 10px;"></div>
           <ion-item>
-            <ion-label><ion-icon name="mail" style="color:white"></ion-icon></ion-label>
-            <ion-input 
+            <ion-label><ion-icon name="mail" style="color:#488aff"></ion-icon></ion-label>
+            <ion-input
             type="email"
             formControlName="email" 
             placeholder="Email" 
@@ -35,7 +35,7 @@
 
           <div class="spacer" style="height: 5px;"></div>
           <ion-item>
-            <ion-label><ion-icon name="key" style="color:white"></ion-icon></ion-label>
+            <ion-label><ion-icon name="key" style="color:#488aff"></ion-icon></ion-label>
             <ion-input 
             type="password" formControlName="password" placeholder="Password" ></ion-input>
           </ion-item>
@@ -45,12 +45,12 @@
         <a (click)="passwordreset()">Forgot login details ? <b> Get Help </b></a>
 
         <div class="spacer" style="height: 10px;"></div>
-        <button ion-button block round outline color="light" (click)="signin()">Login</button>
+        <button ion-button block round outline color="primary" (click)="signin()">Login</button>
         <div class="spacer" style="height: 10px;"></div>
         <p>OR</p>
 
         <div class="spacer" style="height: 10px;"></div>
-        <button ion-button clear full color="light" (click)="signup()">Don't have an account? Sign up</button>
+        <button ion-button clear full color="primary" (click)="signup()">Don't have an account? Sign up</button>
 
       </ion-list>
     </ion-card-content>
